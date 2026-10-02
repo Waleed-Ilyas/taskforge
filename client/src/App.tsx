@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { io, type Socket } from "socket.io-client";
 import { DndContext, closestCorners, DragOverlay, defaultDropAnimationSideEffects } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -109,7 +109,10 @@ function SortableTask({ task, onDelete, onAddComment }: { task: Task, onDelete: 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <TaskCard task={task} onDelete={onDelete} onAddComment={onAddComment} />
-    </div>\n    </DndContext>\n  );\n}
+    </div>
+    </DndContext>
+  );
+}
 
 function TaskCard({ task, onDelete, onAddComment }: { task: Task, onDelete: () => void, onAddComment: (t: string) => void }) {
   return (
