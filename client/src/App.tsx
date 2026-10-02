@@ -1,5 +1,8 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { io, type Socket } from "socket.io-client";
+import { DndContext, closestCorners, DragOverlay, defaultDropAnimationSideEffects } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 const columns = [
@@ -93,7 +96,57 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return data as T;
 }
 
-export default function App() {
+
+function SortableTask({ task, onDelete, onAddComment }: { task: Task, onDelete: () => void, onAddComment: (t: string) => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id, data: { type: 'Task', task } });
+  
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <TaskCard task={task} onDelete={onDelete} onAddComment={onAddComment} />
+    </div>\n    </DndContext>\n  );\n}
+
+function TaskCard({ task, onDelete, onAddComment }: { task: Task, onDelete: () => void, onAddComment: (t: string) => void }) {
+  return (
+    <div style={styles.taskCard}>
+      <div style={styles.taskTopRow}>
+        <span style={{ ...styles.priorityPill, background: task.priority === 'High' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)', color: task.priority === 'High' ? '#fca5a5' : '#fcd34d' }}>{task.priority}</span>
+        <span style={styles.taskMeta}>{task.id}</span>
+      </div>
+      <h4 style={styles.taskTitle}>{task.title}</h4>
+      <p style={styles.taskDescription}>{task.description}</p>
+      <div style={styles.taskMetaRow}>
+        {task.labels.length > 0 ? task.labels.map((l) => <span key={l} style={styles.labelPill}>{l}</span>) : <span style={styles.emptyLabel}>No labels</span>}
+      </div>
+      <div style={styles.taskFooter}>
+        <div>
+          <span style={styles.assignee}>{task.assignee || 'Unassigned'}</span>
+          <div style={styles.dueDate}>{task.dueDate ? 'Due ' + task.dueDate : 'No due date'}</div>
+        </div>
+        <div style={styles.taskActions}>
+          <button style={styles.deleteButton} onClick={onDelete}>Delete</button>
+        </div>
+      </div>
+      <div style={styles.commentBox}>
+        {task.comments.map(c => (
+          <div key={c.id} style={styles.commentItem}>
+            <span style={styles.commentAuthor}>{c.author}:</span> {c.text}
+          </div>
+        ))}
+        <form style={styles.commentComposer} onSubmit={(e) => { e.preventDefault(); const t = (e.target as any).text.value; if(t) onAddComment(t); (e.target as any).reset(); }}>
+          <input name="text" style={styles.commentInput} placeholder="Write a comment..." />
+          <button style={styles.smallButton}>Send</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+\nexport default function App() {
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === "undefined") return null;
     const cached = window.localStorage.getItem("taskforge-user");
