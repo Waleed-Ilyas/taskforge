@@ -5,7 +5,6 @@
   "description": "Real-time team kanban workspace with live collaboration and drag-and-drop workflows.",
   "license": "MIT",
   "author": "Waleed Ilyas",
-  "packageManager": "pnpm@12.8.1",
   "scripts": {
     "dev": "pnpm --parallel --filter ./server --filter ./client dev",
     "build": "pnpm -r build",
@@ -17,5 +16,15 @@
   },
   "devDependencies": {
     "prettier": "^3.6.2"
-  }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "unrs-resolver",
+      "esbuild",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma"
+    ]
+  },
+  "packageManager": "pnpm@12.8.1"
 }
