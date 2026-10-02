@@ -1,5 +1,4 @@
 {
   "framework": "vite",
-  "outputDirectory": "client/dist",
-  "installCommand": "pnpm install --config.ignore-scripts=true"
+  "outputDirectory": "client/dist"
 }
