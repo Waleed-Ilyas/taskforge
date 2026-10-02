@@ -110,7 +110,6 @@ function SortableTask({ task, onDelete, onAddComment }: { task: Task, onDelete: 
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <TaskCard task={task} onDelete={onDelete} onAddComment={onAddComment} />
     </div>
-    </DndContext>
   );
 }
 
@@ -149,7 +148,7 @@ function TaskCard({ task, onDelete, onAddComment }: { task: Task, onDelete: () =
     </div>
   );
 }
-\nexport default function App() {
+export default function App() {
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === "undefined") return null;
     const cached = window.localStorage.getItem("taskforge-user");
